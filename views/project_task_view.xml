@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="development_project_view_task_search_form" model="ir.ui.view">
+        <field name="name">development.project.view.task.search.form</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_search_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='my_tasks']" position="attributes">
+                <attribute name="domain">[
+                    '|',
+                    ('user_id', '=', uid),
+                    ('developer_ids', 'in', [uid])
+                ]</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="development_project_view_task_tree2" model="ir.ui.view">
+        <field name="name">development.project.view.task.tree2</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_tree2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="developer_ids" widget="many2many_tags"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="development_project_task_form_developer" model="ir.ui.view">
+        <field name="name">development.project.task.form.developer</field>
+        <field name="model">project.task</field>
+        <field name="priority" eval="5"/>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="groups_id" 
+               eval="[(4, ref('development_project.group_development_project_developer'))]"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']/following-sibling::group" position="after">
+            <h2>Development Data</h2>
+            <field name="currency_id" invisible="1"/>
+            <group>
+                <group>
+                    <field name="developer_ids" readonly="1" widget="many2many_tags"/>
+                    <field name="custom_priority" readonly="1"/>
+                    <field name="bonus" readonly="1" widget="monetary" 
+                           options="{'currency_field': 'currency_id'}"/>
+                    <field name="bonus_deadline" readonly="1"/>
+                </group>
+                <group id="special_custom_fields"></group>
+            </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="development_project_task_form_assistant" model="ir.ui.view">
+        <field name="name">development.project.task.form.assitant</field>
+        <field name="model">project.task</field>
+        <field name="priority" eval="4"/>
+        <field name="inherit_id" 
+               ref="development_project.development_project_task_form_developer"/>
+        <field name="groups_id" 
+               eval="[(4, ref('development_project.group_development_project_admin_assistant'))]"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@id='special_custom_fields']" position="inside">
+                <field name="estimated_total_hours" readonly="1"/>
+                <field name="estimated_expense" readonly="1" widget="monetary" 
+                       options="{'currency_field': 'currency_id'}"/>
+                <field name="estimated_income" readonly="1" widget="monetary" 
+                       options="{'currency_field': 'currency_id'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="development_project_task_form_admin" model="ir.ui.view">
+        <field name="name">development.project.task.form.admin</field>
+        <field name="model">project.task</field>
+        <field name="priority" eval="3"/>
+        <field name="inherit_id" 
+               ref="development_project.development_project_task_form_assistant"/>
+        <field name="groups_id" 
+               eval="[(4, ref('development_project.group_development_project_admin'))]"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='developer_ids']" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </xpath>
+            <xpath expr="//field[@name='custom_priority']" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </xpath>
+            <xpath expr="//field[@name='bonus']" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </xpath>
+            <xpath expr="//field[@name='bonus_deadline']" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </xpath>
+            <xpath expr="//field[@name='estimated_total_hours']" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </xpath>
+            <xpath expr="//field[@name='estimated_expense']" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </xpath>
+            <xpath expr="//field[@name='estimated_income']" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
